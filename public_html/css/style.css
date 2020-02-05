@@ -1,0 +1,55 @@
+:root {
+  --rowNum: 3;
+  --colNum: 3;
+  --gridHeight: 0px;
+}
+
+
+#wrapper {
+  display: grid;
+
+  grid-template-columns: repeat(var(--rowNum), 1fr);
+  grid-template-rows: repeat(var(--rowNum), 1fr);
+  gap: 5px;
+
+  height: 100vh;
+  width: 100vw;
+}
+
+.grid-item {
+  align-self: stretch;
+  justify-items: stretch;
+  overflow: hidden;
+}
+
+.dropdownContent{
+  color:white;
+  font-size: 0.9em;
+  text-align: center;
+  list-style: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+
+}
+
+.time {
+  color: white;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.weatherModule {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.chromeCastChannel {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
