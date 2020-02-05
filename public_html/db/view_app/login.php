@@ -4,7 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   login($host, $database, $username, $password);
 }
 
- 
+
 function login($host, $database, $username, $password)
 {
   try {
