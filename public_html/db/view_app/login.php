@@ -1,54 +1,72 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  require '../connection.php';
-  login($host, $database, $username, $password);
+    require '../connection.php';
+    login($host, $database, $username, $password);
 }
-
 
 function login($host, $database, $username, $password)
 {
-  try {
-    $connect = new PDO("mysql:host=$host; dbname=$database", $username, $password);
+    try {
+        $connect = new PDO("mysql:host=$host; dbname=$database", $username, $password);
 
-    $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    if (isset($_POST["login"])) {
-      if (empty($_POST["username"]) || empty($_POST["password"])) {
-        echo "all fields are required";
-        echo "$connect";
-      } else {
-        $query = "SELECT * FROM users WHERE mirror_id = :username AND password =:password";
-        $statement = $connect->prepare($query);
-        $statement->execute(
-          array(
-            'username' => $_POST["username"],
-            'password' => $_POST["password"],
-          )
-        );
-        $count = $statement->rowCount();
-        if ($count > 0) {
-          $data = [
-            'date_cookie' => date("Y-m-d H:i:s"),
-            'username' => $_POST["username"],
-          ];
+        $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($_POST["request"] == "login") {
+            if (empty($_POST["username"]) || empty($_POST["password"])) {
+                echo "all fields are required";
+            } else {
+                $query = "SELECT * FROM users WHERE mirror_id = :username";
+                $statement = $connect->prepare($query);
+                $statement->execute(['username' => $_POST["username"]]);
+                $data = $statement->fetch(PDO::FETCH_ASSOC);
 
-          $query = "UPDATE users SET login_cookie=:date_cookie WHERE mirror_id =:username";
-          $statement = $connect->prepare($query);
-          $statement->execute($data);
-          echo "login_success";
+                if (count($data["mirror_id"]) == 0) {
+                    echo "Serial number does not exist";
+                    return null;
+                }
+
+                if (!$data["first_login"] && $data["password"] == $_POST["password"]) {
+                    continued_login($connect);
+                } else if ($data["first_login"]) {
+                    first_login($connect);
+                } else {
+                    echo "wrong initials";
+                }
+            }
+
         } else {
-          echo "Wrong initials";
+            echo "Wrong request";
         }
-      }
+
+    } catch (PDOException $error) {
+        $message = $error->getMessage();
+        echo "PDOException " . $message;
 
     }
+}
 
-    else if(isset($_POST["login_cookie"])){
+function continued_login($connect)
+{
+    $data = [
+        'date_cookie' => date("Y-m-d H:i:s"),
+        'username' => $_POST["username"],
+    ];
 
-    }
+    $query = "UPDATE users SET login_cookie=:date_cookie WHERE mirror_id =:username";
+    $statement = $connect->prepare($query);
+    $statement->execute($data);
+    echo "login_success";
+}
 
-  } catch (PDOException $error) {
-    $message = $error->getMessage();
-    echo "PDOException " . $message;
+function first_login($connect){
+    $data = [
+        'date_cookie' => date("Y-m-d H:i:s"),
+        'password' => $_POST["password"],
+        'username' => $_POST["username"],
+        'first_login' => 0,
+    ];
 
-  }
+    $query = "UPDATE users SET login_cookie=:date_cookie, password=:password, first_login=:first_login WHERE mirror_id =:username";
+    $statement = $connect->prepare($query);
+    $statement->execute($data);
+    echo "login_success";
 }
