@@ -10,7 +10,7 @@ function login($host, $database, $username, $password)
         $connect = new PDO("mysql:host=$host; dbname=$database", $username, $password);
 
         $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        if ($_POST["request"] == "login") {
+        if ($_POST["request"] == "login") { //else request == "create_account"
             if (empty($_POST["username"]) || empty($_POST["password"])) {
                 echo "all fields are required";
             } else {
@@ -68,5 +68,5 @@ function first_login($connect){
     $query = "UPDATE users SET login_cookie=:date_cookie, password=:password, first_login=:first_login WHERE mirror_id =:username";
     $statement = $connect->prepare($query);
     $statement->execute($data);
-    echo "login_success";
+    echo "account_created";
 }
