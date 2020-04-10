@@ -16,13 +16,11 @@ function request_setup_information($host, $database, $username, $password)
     $stmt->execute([$mirror_id]);
     $row = $stmt->fetch(PDO::FETCH_NUM);
 
-    if (empty($row) && $request == "setup") {
-        setupNewUser($pdo, $mirror_id);
-    } else if (!empty($row) && $request == "setup") {
+    if (!empty($row) && $request == "setup_calendar") {
         updateUserEmail($pdo, $mirror_id);
-    } else if (!empty($row) && $request == "getUserData") getUserData($pdo, $mirror_id);
-    else if (!empty($row) && $request == "getSetupData") getSetupData($pdo, $mirror_id);
-    else if ($request == "outlookSetupURL") setupOutlookURL($pdo, $mirror_id);
+    } else if (!empty($row) && $request == "user_data") getUserData($pdo, $mirror_id);
+    else if (!empty($row) && $request == "setup_data") getSetupData($pdo, $mirror_id);
+    else if ($request == "outlook_setup_url") setupOutlookURL($pdo, $mirror_id);
     else if ($request == "set_weather_location") updateUserWeatherLocation($pdo, $mirror_id);
 
 }
@@ -79,11 +77,12 @@ function updateUserWeatherLocation($pdo, $mirror_id)
 
 function setupOutlookURL($pdo, $mirror_id)
 {
+    echo "mirror id is: " . $mirror_id;
     $statement = $pdo->prepare("SELECT calendar_setup FROM setup WHERE mirror_id=:mirror_id");
     $statement->execute(['mirror_id' => $mirror_id]);
 
     while ($row = $statement->fetch()) {
-        if ($row[0] == "1") {
+        if ($row[0] == "1") { //Check if calendar setup is active
             $stmt = $pdo->prepare("SELECT outlook_setupURL FROM setup WHERE mirror_id=:mirror_id");
             $stmt->execute(['mirror_id' => $mirror_id]);
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
