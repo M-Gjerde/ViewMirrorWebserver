@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/app.kaufmanndesigns.net.iml" filepath="$PROJECT_DIR$/.idea/app.kaufmanndesigns.net.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../server_nodejs/.idea/server_nodejs.iml" filepath="$PROJECT_DIR$/../server_nodejs/.idea/server_nodejs.iml" />
     </modules>
   </component>
 </project>
