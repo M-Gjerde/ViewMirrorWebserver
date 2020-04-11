@@ -33,10 +33,10 @@ function request_setup_information($host, $database, $username, $password)
             case "outlook_setup_url":
                 setupOutlookURL($pdo, $mirror_id);
                 break;
-            case "weather_location":
+            case "weather_setup":
                 updateUserWeatherLocation($pdo, $mirror_id);
                 break;
-            case "calendar_provider":
+            case "calendar_setup":
                 updateUserEmail($pdo, $mirror_id);
                 break;
             default:
@@ -67,15 +67,15 @@ function getSetupData($pdo, $mirror_id)
 
 function updateUserEmail($pdo, $mirror_id)
 {
-    $service_provider = $_POST["service_provider"];
-    $sql = "UPDATE view_setup SET service_provider =:service_provider, calendar_setup=:setup WHERE mirror_id=:mirror_id";
+    $service_provider = $_POST["calendar_provider"];
+    $sql = "UPDATE view_setup SET calendar_provider =:calendar_provider, calendar_setup=:setup WHERE mirror_id=:mirror_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         'mirror_id' => $mirror_id,
-        'service_provider' => $service_provider,
+        'calendar_provider' => $service_provider,
         'setup' => 1
     ]);
-    echo "updated user " . $service_provider;
+    echo 1;
 }
 
 function updateUserWeatherLocation($pdo, $mirror_id)
@@ -87,7 +87,7 @@ function updateUserWeatherLocation($pdo, $mirror_id)
         'mirror_id' => $mirror_id,
         'weather_location' => $weather_location,
     ]);
-    echo "updated users location to " . $weather_location;
+    echo 1;
 }
 
 function setupOutlookURL($pdo, $mirror_id)
