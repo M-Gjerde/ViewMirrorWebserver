@@ -33,6 +33,9 @@ function request_setup_information($host, $database, $username, $password)
             case "outlook_setup_url":
                 setupOutlookURL($pdo, $mirror_id);
                 break;
+            case "google_setup_url":
+                setupGoogleURL($pdo, $mirror_id);
+                break;
             case "weather_setup":
                 updateUserWeatherLocation($pdo, $mirror_id);
                 break;
@@ -88,6 +91,15 @@ function updateUserWeatherLocation($pdo, $mirror_id)
         'weather_location' => $weather_location,
     ]);
     echo 1;
+}
+
+function setupGoogleURL($pdo, $mirror_id)
+{
+    $stmt = $pdo->prepare("SELECT google_setup_link FROM view_setup WHERE mirror_id=:mirror_id");
+    $stmt->execute(['mirror_id' => $mirror_id]);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    echo urlencode($data["google_setup_link"]);
 }
 
 function setupOutlookURL($pdo, $mirror_id)
