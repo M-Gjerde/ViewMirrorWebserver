@@ -64,9 +64,17 @@ function continued_login($connect, $mirror_id)
 function first_login($connect)
 {
     //SETUP user first
-
     $mirror_id = generateCustomerID();
     $query = "INSERT INTO users(mirror_id) VALUES('$mirror_id')";
+    $statement = $connect->prepare($query);
+    $statement->execute();
+    //TODO Error handling
+    $query = "INSERT INTO view_control(mirror_id) VALUES('$mirror_id')";
+    $statement = $connect->prepare($query);
+    $statement->execute();
+    //Add rows to other columns
+    //TODO Error handling
+    $query = "INSERT INTO view_setup(mirror_id) VALUES('$mirror_id')";
     $statement = $connect->prepare($query);
     $statement->execute();
     //TODO Error handling
@@ -81,7 +89,7 @@ function first_login($connect)
         'email' => $email,
         'mirror_id' => $mirror_id,
     ];
-
+ 
     $query = "UPDATE users SET login_cookie=:date_cookie, password=:new_password, email=:email, name=:name WHERE mirror_id =:mirror_id";
     $statement = $connect->prepare($query);
     $statement->execute($data);
