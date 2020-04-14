@@ -14,33 +14,35 @@ function login($host, $database, $username, $password)
     $password = $_POST["password"];
     $email = $_POST["email"];
 
-    if ($request == "login") {
-        if (empty($email) || empty($password)) {
-            echo "all fields are required";
-        } else {
-            $query = "SELECT * FROM users WHERE mirror_id = :mirror_id";
-            $statement = $connect->prepare($query);
-            $statement->execute(['mirror_id' => $mirror_id]);
-            $data = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if (count($data["mirror_id"]) == 0) {
-                echo 2;
-                return 2;
-            }
-
-            if ($data["password"] == $password) {
-                continued_login($connect, $mirror_id);
+    switch ($request) {
+        case "login":
+            if (empty($email) || empty($password)) {
+                echo "all fields are required";
             } else {
-                echo 3;
-                return 3;
-            }
-        }
+                $query = "SELECT * FROM users WHERE mirror_id = :mirror_id";
+                $statement = $connect->prepare($query);
+                $statement->execute(['mirror_id' => $mirror_id]);
+                $data = $statement->fetch(PDO::FETCH_ASSOC);
 
-    } else if ($request == "first_login") {
-        first_login($connect, $mirror_id, $password);
-    } else {
-        echo 4;
-        return 4;
+                if (count($data["mirror_id"]) == 0) {
+                    echo 2;
+                    return 2;
+                }
+
+                if ($data["password"] == $password) {
+                    continued_login($connect, $mirror_id);
+                } else {
+                    echo 3;
+                    return 3;
+                }
+            }
+            break;
+        case "first_login":
+            first_login($connect);
+            break;
+        default:
+            echo 4;
+            break;
     }
 
     return null;
@@ -59,8 +61,16 @@ function continued_login($connect, $mirror_id)
     echo 1;
 }
 
-function first_login($connect, $mirror_id)
+function first_login($connect)
 {
+    //SETUP user first
+
+    $mirror_id = generateCustomerID();
+    $query = "INSERT INTO users(mirror_id) VALUES('$mirror_id')";
+    $statement = $connect->prepare($query);
+    $statement->execute();
+    //TODO Error handling
+    //Populate from request
     $email = $_POST["email"]; //TODO return error if not all parameters are found
     $new_password = $_POST["new_password"];
     $full_name = $_POST["full_name"];
@@ -70,12 +80,30 @@ function first_login($connect, $mirror_id)
         'name' => $full_name,
         'email' => $email,
         'mirror_id' => $mirror_id,
-        'first_login' => 0,
     ];
 
-    $query = "UPDATE users SET login_cookie=:date_cookie, password=:new_password, first_login=:first_login, email=:email, name=:name WHERE mirror_id =:mirror_id";
+    $query = "UPDATE users SET login_cookie=:date_cookie, password=:new_password, email=:email, name=:name WHERE mirror_id =:mirror_id";
     $statement = $connect->prepare($query);
     $statement->execute($data);
-    echo 1;
+    echo $mirror_id;
 
+}
+
+function generateCustomerID()
+{
+    $numbers = '0123456789';
+    $letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $randomString = '';
+
+    for ($i = 0; $i < 2; $i++) {
+        $index = rand(0, strlen($letters) - 1);
+        $randomString .= $letters[$index];
+    }
+
+    for ($i = 0; $i < 4; $i++) {
+        $index = rand(0, strlen($numbers) - 1);
+        $randomString .= $numbers[$index];
+    }
+
+    return $randomString;
 }
