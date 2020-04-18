@@ -19,12 +19,12 @@ function login($host, $database, $username, $password)
             if (empty($email) || empty($password)) {
                 echo "all fields are required";
             } else {
-                $query = "SELECT * FROM users WHERE mirror_id = :mirror_id";
+                $query = "SELECT * FROM users WHERE email = :email";
                 $statement = $connect->prepare($query);
-                $statement->execute(['mirror_id' => $mirror_id]);
+                $statement->execute(['email' => $email]);
                 $data = $statement->fetch(PDO::FETCH_ASSOC);
 
-                if (count($data["mirror_id"]) == 0) {
+                if (count($data["email"]) == 0) {
                     echo 2;
                     return 2;
                 }
