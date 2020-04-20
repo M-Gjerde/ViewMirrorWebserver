@@ -25,8 +25,8 @@ function login($host, $database, $username, $password)
                 $data = $statement->fetch(PDO::FETCH_ASSOC);
 
                 if (count($data["email"]) == 0) {
-                    echo 2;
-                    return 2;
+                    echo 5;
+                    return 5;
                 }
 
                 if ($data["password"] == $password) {
@@ -58,6 +58,8 @@ function continued_login($connect, $mirror_id)
     $query = "UPDATE users SET login_cookie=:date_cookie WHERE mirror_id =:mirror_id";
     $statement = $connect->prepare($query);
     $statement->execute($data);
+
+    //TODO return Mirror id
     echo 1;
 }
 
