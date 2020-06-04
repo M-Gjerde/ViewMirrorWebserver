@@ -10,7 +10,6 @@ function login($host, $database, $username, $password)
     $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $request = $_POST["request"];
-    $mirror_id = $_POST["mirror_id"];
     $password = $_POST["password"];
     $email = $_POST["email"];
 
@@ -30,7 +29,7 @@ function login($host, $database, $username, $password)
                 }
 
                 if ($data["password"] == $password) {
-                    continued_login($connect, $mirror_id);
+                    continued_login($connect);
                 } else {
                     echo 3;
                     return 3;
@@ -48,19 +47,17 @@ function login($host, $database, $username, $password)
     return null;
 }
 
-function continued_login($connect, $mirror_id)
+function continued_login($connect)
 {
-    $data = [
-        'date_cookie' => date("Y-m-d H:i:s"),
-        'mirror_id' => $mirror_id
-    ];
 
-    $query = "UPDATE users SET login_cookie=:date_cookie WHERE mirror_id =:mirror_id";
+    $email = $_POST["email"]; //TODO return error if not all parameters are found
+    $query = "SELECT mirror_id FROM users WHERE email = :email";
     $statement = $connect->prepare($query);
-    $statement->execute($data);
+    $statement->execute(['email' => $email]);
+    $data = $statement->fetch(PDO::FETCH_ASSOC);
 
     //TODO return Mirror id
-    echo 1;
+    echo $data["mirror_id"];
 }
 
 function first_login($connect)
