@@ -13,28 +13,29 @@ function login($host, $database, $username, $password)
     $password = $_POST["password"];
     $email = $_POST["email"];
 
+    if (empty($email) || empty($password || empty($request))) {
+        echo 6;
+        return -1;
+    }
     switch ($request) {
         case "login":
-            if (empty($email) || empty($password)) {
-                echo "all fields are required";
-            } else {
-                $query = "SELECT * FROM users WHERE email = :email";
-                $statement = $connect->prepare($query);
-                $statement->execute(['email' => $email]);
-                $data = $statement->fetch(PDO::FETCH_ASSOC);
+            $query = "SELECT * FROM users WHERE email = :email";
+            $statement = $connect->prepare($query);
+            $statement->execute(['email' => $email]);
+            $data = $statement->fetch(PDO::FETCH_ASSOC);
 
-                if (count($data["email"]) == 0) {
-                    echo 5;
-                    return 5;
-                }
-
-                if ($data["password"] == $password) {
-                    continued_login($connect);
-                } else {
-                    echo 3;
-                    return 3;
-                }
+            if (count($data["email"]) == 0) {
+                echo 5;
+                return 5;
             }
+
+            if ($data["password"] == $password) {
+                continued_login($connect);
+            } else {
+                echo 3;
+                return 3;
+            }
+
             break;
         case "first_login":
             first_login($connect);
@@ -62,6 +63,16 @@ function continued_login($connect)
 
 function first_login($connect)
 {
+    $email = strtolower($_POST["email"]); //TODO return error if not all parameters are found
+    $new_password = $_POST["new_password"];
+    $full_name = $_POST["name"];
+
+    $query = "SELECT * FROM users";
+    $statement = $connect->prepare($query);
+    $statement->execute();
+    while ($data = $statement->fetch(PDO::FETCH_ASSOC)) {
+        if ($data["email"] == $email){ echo 5; return -1;}
+    }
     //SETUP user first
     $mirror_id = generateCustomerID();
     $query = "INSERT INTO users(mirror_id) VALUES('$mirror_id')";
@@ -78,9 +89,7 @@ function first_login($connect)
     $statement->execute();
     //TODO Error handling
     //Populate from request
-    $email = $_POST["email"]; //TODO return error if not all parameters are found
-    $new_password = $_POST["new_password"];
-    $full_name = $_POST["full_name"];
+
     $data = [
         'date_cookie' => date("Y-m-d H:i:s"),
         'new_password' => $new_password,
@@ -88,7 +97,7 @@ function first_login($connect)
         'email' => $email,
         'mirror_id' => $mirror_id,
     ];
- 
+
     $query = "UPDATE users SET login_cookie=:date_cookie, password=:new_password, email=:email, name=:name WHERE mirror_id =:mirror_id";
     $statement = $connect->prepare($query);
     $statement->execute($data);
