@@ -13,7 +13,8 @@ function login($host, $database, $username, $password)
     $password = $_POST["password"];
     $email = $_POST["email"];
 
-    if (empty($email) || empty($password || empty($request))) {
+    //TODO simplify condition
+    if (empty($email) || (empty($password) && empty($_POST["new_password"])) || empty($request)) {
         echo 6;
         return -1;
     }
@@ -30,7 +31,7 @@ function login($host, $database, $username, $password)
             }
 
             if ($data["password"] == $password) {
-                continued_login($connect);
+                continued_login($connect, $email);
             } else {
                 echo 3;
                 return 3;
@@ -48,17 +49,16 @@ function login($host, $database, $username, $password)
     return null;
 }
 
-function continued_login($connect)
+function continued_login($connect, $email)
 {
 
-    $email = $_POST["email"]; //TODO return error if not all parameters are found
     $query = "SELECT mirror_id FROM users WHERE email = :email";
     $statement = $connect->prepare($query);
     $statement->execute(['email' => $email]);
     $data = $statement->fetch(PDO::FETCH_ASSOC);
 
-    //TODO return Mirror id
-    echo $data["mirror_id"];
+    //TODO Maybe return Mirror id
+    echo 1;
 }
 
 function first_login($connect)

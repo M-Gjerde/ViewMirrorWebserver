@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="webserver_viewmirror">
+  <component name="PublishConfigData" autoUpload="Always" serverName="server">
     <serverData>
-      <paths name="rpi_home">
+      <paths name="server">
         <serverdata>
           <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="webserver_viewmirror">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-            <mapping deploy="/" local="$PROJECT_DIR$/../server_nodejs" web="/" />
+            <mapping deploy="/var/www/app.kaufmanndesigns.net/" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
