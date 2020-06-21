@@ -4,8 +4,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     login($host, $database, $username, $password);
 }
 
+
 function login($host, $database, $username, $password)
 {
+
     $connect = new PDO("mysql:host=$host; dbname=$database", $username, $password);
     $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -26,8 +28,8 @@ function login($host, $database, $username, $password)
             $data = $statement->fetch(PDO::FETCH_ASSOC);
 
             if (count($data["email"]) == 0) {
-                echo 5;
-                return 5;
+                echo 7;
+                return 7;
             }
 
             if ($data["password"] == $password) {
