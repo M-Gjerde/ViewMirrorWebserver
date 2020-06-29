@@ -43,6 +43,10 @@ function login($host, $database, $username, $password)
         case "first_login":
             first_login($connect);
             break;
+
+        case "mirror_id":
+            returnMirrorID($connect, $email, $password);
+            break;
         default:
             echo 4;
             break;
@@ -51,15 +55,23 @@ function login($host, $database, $username, $password)
     return null;
 }
 
+function returnMirrorID($connect, $email, $password){
+    $query = "SELECT mirror_id FROM users WHERE email = :email AND password =:password";
+    $statement = $connect->prepare($query);
+    $statement->execute([
+        'email' => $email,
+        'password' => $password
+    ]);
+    $data = $statement->fetch(PDO::FETCH_ASSOC);
+    echo $data["mirror_id"];
+}
+
 function continued_login($connect, $email)
 {
-
     $query = "SELECT mirror_id FROM users WHERE email = :email";
     $statement = $connect->prepare($query);
     $statement->execute(['email' => $email]);
     $data = $statement->fetch(PDO::FETCH_ASSOC);
-
-    //TODO Maybe return Mirror id
     echo 1;
 }
 

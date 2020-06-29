@@ -36,7 +36,7 @@ function request_setup_information($host, $database, $username, $password)
             case "google_setup_url":
                 setupGoogleURL($pdo, $mirror_id);
                 break;
-            case "weather_setup":
+            case "location":
                 updateUserWeatherLocation($pdo, $mirror_id);
                 break;
             case "calendar_setup":
@@ -83,12 +83,12 @@ function updateUserEmail($pdo, $mirror_id)
 
 function updateUserWeatherLocation($pdo, $mirror_id)
 {
-    $weather_location = $_POST["weather_location"];
-    $sql = "UPDATE view_setup SET weather_city =:weather_location WHERE mirror_id=:mirror_id";
+    $location = $_POST["location"];
+    $sql = "UPDATE view_setup SET location =:location WHERE mirror_id=:mirror_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         'mirror_id' => $mirror_id,
-        'weather_location' => $weather_location,
+        'location' => $location,
     ]);
     echo 1;
 }

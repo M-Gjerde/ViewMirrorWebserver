@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig host="app.kaufmanndesigns.net" id="8dface90-0d7f-4c05-b2cc-6e08a67c9891" keyPath="$USER_HOME$/google_server.ppk" port="22" nameFormat="DESCRIPTIVE" username="magnus" />
+      <sshConfig host="app.kaufmanndesigns.net" id="8dface90-0d7f-4c05-b2cc-6e08a67c9891" keyPath="$USER_HOME$/secrets/google_server.ppk" port="22" nameFormat="DESCRIPTIVE" username="magnus" />
     </configs>
   </component>
 </project>
